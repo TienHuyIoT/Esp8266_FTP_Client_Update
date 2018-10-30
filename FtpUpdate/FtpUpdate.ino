@@ -3,7 +3,7 @@
 #elif defined(ESP32)
 #include <WiFi.h>
 #else
-#error "Just only suport for esp8266 and esp32"
+#error "Just only support for esp8266 and esp32"
 #endif
 
 #include "FtpClientUpdate.h"

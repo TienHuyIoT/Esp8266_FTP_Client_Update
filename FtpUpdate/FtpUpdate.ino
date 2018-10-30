@@ -1,5 +1,11 @@
+#ifdef ESP8266
 #include <ESP8266WiFi.h>
-#include <FS.h>
+#elif defined(ESP32)
+#include <WiFi.h>
+#else
+#error "Just only suport for esp8266 and esp32"
+#endif
+
 #include "FtpClientUpdate.h"
 
 /* Send 'f' from serial to download*/
@@ -16,7 +22,7 @@ String host = "192.168.31.199";
 String user = "ftp user";
 String pass = "ftp pass";
 String path = "ftpupdateV1.bin";
-String md5 = "84950FB41AC0515F0EADA7517A148D3A";
+String Md5Check = "84950FB41AC0515F0EADA7517A148D3A";
 
 #define DEBUG(fmt, ...) Serial.printf_P(PSTR("\r\nP" fmt) ,##__VA_ARGS__)
 
@@ -91,7 +97,11 @@ void setup() {
   DEBUG("FwVersion: %s",FwVersion);
 
   Serial.print("Chip ID: 0x");
+  #ifdef ESP8266
   Serial.println(ESP.getChipId(), HEX);
+  #else
+  Serial.println((uint32_t)ESP.getEfuseMac(), HEX);
+  #endif
 
   Serial.println ( "Connect to Router requested" );
   connectWifi();
@@ -118,7 +128,7 @@ void loop() {
   }
 
   if (inChar == 'f') {    
-    if (FtpClientUpdate.update(host,user,pass,path,md5)) {
+    if (FtpClientUpdate.update(host,user,pass,path,Md5Check)) {
       Serial.println(F("FTP OK"));
       delay(1000);
       ESP.restart();

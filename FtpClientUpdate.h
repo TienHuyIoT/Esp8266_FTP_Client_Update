@@ -2,7 +2,15 @@
 #define ESPFTPCLIENTUPDATE_H_
 
 #include <Arduino.h>
+#ifdef ESP8266
 #include <ESP8266WiFi.h>
+#elif defined(ESP32)
+#include <WiFi.h>
+#include <Update.h>
+#else
+#error "Just only suport for esp8266 and esp32"
+#endif
+#include <FS.h>
 #include <WiFiClient.h>
 #include <TimeOutEvent.h>
 
@@ -48,7 +56,7 @@ class ESPFTPCLIENTUpdate
 {
 public:
     ESPFTPCLIENTUpdate(void);
-    bool update(const String& host, const String& user, const String& pass, const String& path, String& md5);
+    bool update(const String& host, const String& user, const String& pass, const String& path, String& _md5);
     uint8_t getError(){ return _error; }
     void clearError(){ _error = FTP_UPDATE_ERROR_OK; }
     bool hasError(){ return _error != FTP_UPDATE_ERROR_OK; }

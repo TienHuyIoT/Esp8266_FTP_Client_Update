@@ -1,3 +1,6 @@
+#ifdef ESP32
+#include <Update.h>
+#endif
 #include "FtpClientUpdate.h"
 
 ESPFTPCLIENTUpdate::ESPFTPCLIENTUpdate(void)
@@ -70,14 +73,14 @@ bool ESPFTPCLIENTUpdate::eRcv(WiFiClient& _Client, char *BufRx, byte Len)
   return 1;
 } // eRcv()
 
-bool ESPFTPCLIENTUpdate::update(const String& host, const String& user, const String& pass, const String& path, String& md5) {
+bool ESPFTPCLIENTUpdate::update(const String& host, const String& user, const String& pass, const String& path, String& _md5) {
   size_t FileSize = 0;
   size_t Total = 0;
   WiFiClient client;
   WiFiClient dclient;
   char Buf[128];
 
-  if (client.connect(host, 21))
+  if (client.connect(host.c_str(), 21))
   { // 21 = FTP server
     DEBUG_FTPCLIENT_UPDATE("Command connected");
   }
@@ -180,8 +183,13 @@ bool ESPFTPCLIENTUpdate::update(const String& host, const String& user, const St
       DEBUG_FTPCLIENT_UPDATE("FileSize: %u",FileSize);
     }
   }
-  
+
+  #ifdef ESP8266
   uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+  #elif defined(ESP32)
+  /* Option 2M */
+  uint32_t maxSketchSpace = 1024*1024*2;
+  #endif
   DEBUG_FTPCLIENT_UPDATE("SketchSpace: %u", maxSketchSpace);
   if(FileSize==0 || FileSize> maxSketchSpace){
     client.stop();
@@ -202,8 +210,8 @@ bool ESPFTPCLIENTUpdate::update(const String& host, const String& user, const St
   }
   DEBUG_FTPCLIENT_UPDATE("SketchSpace OK");
   //String Md5 = "84950FB41AC0515F0EADA7517A148D3A";
-  md5.toLowerCase();
-  Update.setMD5(md5.c_str());
+  _md5.toLowerCase();
+  Update.setMD5(_md5.c_str());
   
   uint8_t DcConnect;
   TimeOutEvent ToDownload(3000);

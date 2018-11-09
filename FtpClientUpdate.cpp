@@ -21,13 +21,13 @@ void ESPFTPCLIENTUpdate::efail(WiFiClient& _Client)
     }
   } 
 
-#ifdef DEBUG_ESP_FTPCLIENT_PORT
   while (_Client.available())
   {
     thisByte = _Client.read();
-    DEBUG_ESP_FTPCLIENT_PORT.write(thisByte);
-  }
+#ifdef DEBUG_ESP_FTPCLIENT_PORT
+	DEBUG_ESP_FTPCLIENT_PORT.write(thisByte);
 #endif
+  }
 
   _Client.stop();
   DEBUG_FTPCLIENT_UPDATE("Command disconnected");

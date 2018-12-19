@@ -14,7 +14,7 @@
 #include <WiFiClient.h>
 #include <TimeOutEvent.h>
 
-#define DEBUG_ESP_FTPCLIENT_UPDATE
+//#define DEBUG_ESP_FTPCLIENT_UPDATE
 #define DEBUG_ESP_FTPCLIENT_PORT  Serial
 
 #ifdef DEBUG_ESP_FTPCLIENT_UPDATE

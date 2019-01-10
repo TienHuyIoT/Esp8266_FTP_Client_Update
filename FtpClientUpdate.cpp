@@ -237,6 +237,7 @@ bool ESPFTPCLIENTUpdate::update(const String& host, const String& user, const St
       DEBUG_FTPCLIENT_UPDATE("Download Timeout");
       break;
     }
+	delay(1);
     yield();
   } while (DcConnect);
 
